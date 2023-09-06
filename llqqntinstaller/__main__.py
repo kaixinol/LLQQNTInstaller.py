@@ -13,7 +13,7 @@ from rich.prompt import Confirm
 from shutil import rmtree
 sys = system()
 parser = ArgumentParser(
-    prog='llqtinstaller',
+    prog='llqqntinstaller',
     description='LiteLoaderQQNT一键安装器')
 parser.add_argument('-p', '--proxy', type=str)
 parser.add_argument('--use-git-proxy',action='store_true',

@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "llqtinstaller-py"
+version = "0.1.0"
+description = ""
+authors = ["kaesinol <keiplyer@gmail.com>"]
+license = "GPL v3"
+readme = "README.md"
+packages = [{include = "llqtinstaller"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+loguru = "^0.7.1"
+requests = "^2.31.0"
+lxml = "^4.9.3"
+pygit2 = "^1.12.2"
+pysocks = "^1.7.1"
+rich = "^13.5.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

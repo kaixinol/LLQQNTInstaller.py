@@ -16,6 +16,8 @@ parser = ArgumentParser(
     prog='llqtinstaller',
     description='LiteLoaderQQNT一键安装器')
 parser.add_argument('-p', '--proxy', type=str)
+parser.add_argument('--use-git-proxy',action='store_true',
+                    default=False,)
 args = parser.parse_args()
 https_proxy: str = ''
 spider = Spider()
@@ -43,7 +45,9 @@ def get_install_path() -> Path:
 
 
 def install_via_git(folder: Path):
-    repo_url = "https://ghproxy.com/https://github.com/LiteLoaderQQNT/LiteLoaderQQNT.git"
+    repo_url = "https://github.com/LiteLoaderQQNT/LiteLoaderQQNT.git"
+    if args.use_git_proxy:
+        repo_url="https://ghproxy.com/"+repo_url
     repo_path = folder / "LiteLoader"
     if repo_path.exists() and repo_path.is_dir():
         if Confirm.ask("发现LiteLoader不为空，是否删除？",default=False):
@@ -53,7 +57,9 @@ def install_via_git(folder: Path):
     repo = clone_repository(repo_url, repo_path)
     submodules = repo.listall_submodules()
     for submodule in submodules:
-        url = 'https://ghproxy.com/https://github.com/LiteLoaderQQNT' + submodule[submodule.rfind("/"):]
+        url = 'https://github.com/LiteLoaderQQNT' + submodule[submodule.rfind("/"):]
+        if args.use_git_proxy:
+            url = "https://ghproxy.com/" + url
         clone_repository(url, Path(repo_path) / submodule)
     del environ['https_proxy']
 

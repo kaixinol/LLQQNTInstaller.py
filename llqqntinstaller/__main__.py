@@ -7,8 +7,7 @@ from shutil import rmtree
 from loguru import logger
 from lxml import etree
 from pygit2 import clone_repository
-from rich.prompt import Confirm
-from rich.prompt import Console
+from rich.prompt import Confirm,Console
 from rich.table import Table
 
 from .util import Spider
@@ -24,7 +23,6 @@ args = parser.parse_args()
 https_proxy: str = ''
 spider = Spider(use_git_proxy=args.use_git_proxy)
 if args.proxy:
-    https_proxy = environ.pop('https_proxy', None)
     environ['https_proxy'] = args.proxy
     spider = Spider(proxy={'https': args.proxy},use_git_proxy=args.use_git_proxy)
 
@@ -124,9 +122,7 @@ try:
     logger.info(f'LiteLoaderQQNT 版本：{get_current_version()}')
     print_info_table()
 except Exception:
-    logger.error('无法爬取版本信息和帮助信息，请考虑使用VPN')
-if https_proxy:
-    environ['https_proxy'] = https_proxy
+    logger.error('无法爬取版本信息和帮助信息，请考虑使用VPN 并使用`--proxy`选项指定代理')
 path: Path
 try:
     path = get_install_path()

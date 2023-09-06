@@ -7,17 +7,17 @@ from loguru import logger
 from lxml import etree
 from rich.prompt import Console
 from rich.table import Table
-from os import getegid
 from .util import Spider
 from rich.prompt import Confirm
 from shutil import rmtree
+
 sys = system()
 parser = ArgumentParser(
     prog='llqqntinstaller',
     description='LiteLoaderQQNT一键安装器')
 parser.add_argument('-p', '--proxy', type=str)
-parser.add_argument('--use-git-proxy',action='store_true',
-                    default=False,)
+parser.add_argument('--use-git-proxy', action='store_true',
+                    default=False, )
 args = parser.parse_args()
 https_proxy: str = ''
 spider = Spider()
@@ -47,10 +47,13 @@ def get_install_path() -> Path:
 def install_via_git(folder: Path):
     repo_url = "https://github.com/LiteLoaderQQNT/LiteLoaderQQNT.git"
     if args.use_git_proxy:
-        repo_url="https://ghproxy.com/"+repo_url
+        repo_url = "https://ghproxy.com/" + repo_url
     repo_path = folder / "LiteLoader"
     if repo_path.exists() and repo_path.is_dir():
-        if Confirm.ask("发现LiteLoader不为空，是否删除？",default=False):
+        if Confirm.ask("发现LiteLoader不为空，是否删除？", default=False):
+            if sys == "Windows":
+                logger.warning(f"在Windows系统上，你可能需要手动删除此文件夹：{repo_path}")
+                input()
             rmtree(repo_path)
         else:
             exit(0)
@@ -67,7 +70,7 @@ def install_via_git(folder: Path):
 html = spider.get_text('https://github.com/LiteLoaderQQNT/LiteLoaderQQNT')
 
 
-def get_current_version():
+def get_current_version() -> str:
     global spider
     tree = etree.HTML(html)
     try:
@@ -97,9 +100,23 @@ def print_info_table():
     console.print(table)
 
 
+def get_permission() -> bool:
+    if sys != "Windows":
+        from os import getegid
+        return getegid() == 0
+    else:
+        import ctypes
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+
+
+is_admin = get_permission()
 if sys != "Windows":
-    if getegid() != 0:
+    if not is_admin:
         logger.warning('你当前正在使用类UNIX操作系统，你需要使用sudo权限运行脚本')
+        exit(0)
+else:
+    if not is_admin:
+        logger.warning('使用管理员权限运行脚本')
         exit(0)
 logger.info(f'LiteLoaderQQNT 版本：{get_current_version()}')
 print_info_table()
@@ -114,7 +131,7 @@ except Exception as e:
 try:
     install_via_git(path)
 except Exception as e:
-    logger.error('在克隆仓库的过程中发生了一些错误' + str(e))
+    logger.error('在克隆仓库的过程中发生了一些错误 ' + str(e))
     exit(2)
 logger.success('克隆完毕')
 if Confirm.ask("修改package.json?", default=True):

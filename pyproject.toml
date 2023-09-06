@@ -5,7 +5,7 @@ description = ""
 authors = ["kaesinol <keiplyer@gmail.com>"]
 license = "GPL v3"
 readme = "README.md"
-packages = [{include = "llqqntinstaller"}]
+packages = [{ include = "llqqntinstaller" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"

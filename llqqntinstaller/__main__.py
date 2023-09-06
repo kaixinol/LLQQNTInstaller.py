@@ -1,15 +1,17 @@
+from argparse import ArgumentParser
+from os import environ
 from pathlib import Path
 from platform import system
-from pygit2 import clone_repository
-from os import environ
-from argparse import ArgumentParser
+from shutil import rmtree
+
 from loguru import logger
 from lxml import etree
+from pygit2 import clone_repository
+from rich.prompt import Confirm
 from rich.prompt import Console
 from rich.table import Table
+
 from .util import Spider
-from rich.prompt import Confirm
-from shutil import rmtree
 
 sys = system()
 parser = ArgumentParser(

@@ -8,5 +8,5 @@ poetry install
 ```
 ## 运行
 ```commandline
-python3 -m llqqntinstaller
+poetry run python3 -m llqqntinstaller
 ```

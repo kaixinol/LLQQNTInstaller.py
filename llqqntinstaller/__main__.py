@@ -22,11 +22,11 @@ parser.add_argument('--use-git-proxy', action='store_true',
                     default=False, )
 args = parser.parse_args()
 https_proxy: str = ''
-spider = Spider()
+spider = Spider(use_git_proxy=args.use_git_proxy)
 if args.proxy:
     https_proxy = environ.pop('https_proxy', None)
     environ['https_proxy'] = args.proxy
-    spider = Spider(proxy={'https': args.proxy})
+    spider = Spider(proxy={'https': args.proxy},use_git_proxy=args.use_git_proxy)
 
 
 def get_install_path() -> Path:
@@ -62,7 +62,7 @@ def install_via_git(folder: Path):
     repo = clone_repository(repo_url, repo_path)
     submodules = repo.listall_submodules()
     for submodule in submodules:
-        url = 'https://github.com/LiteLoaderQQNT' + submodule[submodule.rfind("/"):]
+        url = 'https://github.com/LiteLoaderQQNT' + submodule[submodule.rfind("/"):] + '.git'
         if args.use_git_proxy:
             url = "https://ghproxy.com/" + url
         clone_repository(url, Path(repo_path) / submodule)
@@ -120,8 +120,11 @@ else:
     if not is_admin:
         logger.warning('使用管理员权限运行脚本')
         exit(0)
-logger.info(f'LiteLoaderQQNT 版本：{get_current_version()}')
-print_info_table()
+try:
+    logger.info(f'LiteLoaderQQNT 版本：{get_current_version()}')
+    print_info_table()
+except Exception:
+    logger.error('无法爬取版本信息和帮助信息，请考虑使用VPN')
 if https_proxy:
     environ['https_proxy'] = https_proxy
 path: Path

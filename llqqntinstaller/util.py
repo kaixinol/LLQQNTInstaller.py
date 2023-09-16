@@ -17,9 +17,9 @@ class Spider:
         self.use_git_proxy = use_git_proxy
 
     @process_url
-    def get_text(self, url: str) -> str | Exception:
+    def get_text(self, url: str) -> str:
         return get(url, proxies=self.proxy).text
 
     @process_url
-    def get_json(self, url: str) -> dict | Exception:
+    def get_json(self, url: str) -> dict:
         return get(url, proxies=self.proxy).json()

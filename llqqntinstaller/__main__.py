@@ -34,7 +34,7 @@ def get_install_path() -> Path:
         , 'Darwin': Path('/Applications/QQ.app/Contents/Resources/app')}[sys]
     res_path = {'Windows': Path('resources') / 'app'
         , 'Linux': Path('resources') / 'app'
-        , 'Darwin': Path('/../../') / Path('Resources/app')}[sys]
+        , 'Darwin': Path('/../../Resources/app')}[sys]
     if qq_default_path.exists() and qq_default_path.is_dir():
         return qq_default_path
     logger.warning('QQNT未安装在默认目录，请手动输入路径')
@@ -94,8 +94,9 @@ def print_info_table():
         table.add_column(column, style="bold")
     data_rows = tree.xpath('//tbody/tr')
     for row in data_rows:
-        data = row.xpath('td/text()')
-        table.add_row(*data)
+        data_text = row.xpath('td')
+        data_text = [etree.tostring(i, method="text", encoding="utf-8").decode("utf-8").strip() for i in data_text]
+        table.add_row(*data_text)
     console = Console()
     console.print(table)
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "llqqntinstaller-py"
-version = "0.2.0"
+version = "0.2.2"
 description = ""
 authors = ["kaesinol <keiplyer@gmail.com>"]
 license = "GPL v3"
